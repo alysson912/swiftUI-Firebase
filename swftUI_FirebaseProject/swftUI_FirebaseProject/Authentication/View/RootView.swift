@@ -8,8 +8,25 @@
 import SwiftUI
 
 struct RootView: View {
+    
+    @State var showSignInView: Bool = false
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            NavigationStack {
+                SettingsView(showSignInView: $showSignInView)
+            }
+        }
+        .onAppear() {
+            let authUser = try? AuthenticationManager.shared.getAuthentication()
+            // se o usuario logado for = anulo entao retorne verdade, se for falso entao retorne falso 
+            self.showSignInView = authUser == nil ? true : false
+        }
+        .fullScreenCover(isPresented: $showSignInView) {
+            NavigationStack {
+                AuthenticationView()
+            }
+        }
     }
 }
 

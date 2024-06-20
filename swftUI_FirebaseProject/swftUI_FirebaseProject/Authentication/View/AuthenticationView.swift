@@ -23,6 +23,7 @@ struct AuthenticationView: View {
             }
         }
         .padding(.horizontal)
+        .navigationTitle("Sign In")
     }
 }
 

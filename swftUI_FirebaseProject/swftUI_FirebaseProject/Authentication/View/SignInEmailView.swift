@@ -25,7 +25,7 @@ struct SignInEmailView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8.0))
             
             Button {
-                
+                viewModel.signIn()
             } label: {
                 Text("Sign In")
                     .font(.headline)
