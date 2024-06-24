@@ -18,13 +18,13 @@ struct RootView: View {
             }
         }
         .onAppear() {
-            let authUser = try? AuthenticationManager.shared.getAuthentication()
+            let authUser = try? AuthenticationManager.shared.getAuthenticatedUser()
             // se o usuario logado for = anulo entao retorne verdade, se for falso entao retorne falso 
             self.showSignInView = authUser == nil ? true : false
         }
         .fullScreenCover(isPresented: $showSignInView) {
             NavigationStack {
-                AuthenticationView()
+                AuthenticationView(showSignInView: $showSignInView)
             }
         }
     }

@@ -10,7 +10,8 @@ import SwiftUI
 
 
 struct SignInEmailView: View {
-  @StateObject private var viewModel = SignInEmailViewModel()
+    @StateObject private var viewModel = SignInEmailViewModel()
+    @Binding var showSignInView: Bool
     
     var body: some View {
         VStack {
@@ -25,7 +26,23 @@ struct SignInEmailView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8.0))
             
             Button {
-                viewModel.signIn()
+                Task {
+                    do {
+                        try await viewModel.signUp()
+                        showSignInView = false
+                        return
+                    } catch {
+                        print(error)
+                    }
+                    
+                    do {
+                        try await viewModel.signIn()
+                        showSignInView = false
+                        return
+                    } catch {
+                        print(error)
+                    }
+                }
             } label: {
                 Text("Sign In")
                     .font(.headline)
@@ -35,7 +52,7 @@ struct SignInEmailView: View {
                     .background(Color.blue)
                     .clipShape(RoundedRectangle(cornerRadius: 8.0))
             }
-                
+            
         }
         .padding(.horizontal)
         .navigationTitle("Sign In With E-mail")
@@ -44,6 +61,6 @@ struct SignInEmailView: View {
 
 #Preview {
     NavigationStack {
-        SignInEmailView()
+        SignInEmailView(showSignInView: .constant(false))
     }
 }
