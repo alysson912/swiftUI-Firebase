@@ -10,8 +10,16 @@ import SwiftUI
 @MainActor
 final class SettingsViewModel: ObservableObject {
     
+    @Published var authProviders: [AuthProviderOption] = []
+    
+    func loadAuthProviders() {
+        if let providers = try? AuthenticationManager.shared.getProvider() {
+            authProviders = providers
+        }
+    }
+    
     func signOut() throws {
-       try  AuthenticationManager.shared.sigOut()
+        try  AuthenticationManager.shared.sigOut()
     }
     
     func resetPassword() async throws {
@@ -42,9 +50,24 @@ struct SettingsView: View {
     
     var body: some View {
         List {
-            LogOutButtonView(showSignInView: $showSignInView)
-            EmailFunctionsView()
+            Button("Log out") {
+                Task {
+                    do {
+                        try viewModel.signOut()
+                        showSignInView = true
+                    } catch {
+                        print(error )
+                    }
+                }
+            }
+            if viewModel.authProviders.contains(.email) {
+                EmailFunctionsView()
+            }
         }
+        .onAppear {
+            viewModel.loadAuthProviders()
+        }
+        
         .navigationTitle("Settings")
     }
 }
@@ -54,26 +77,6 @@ struct SettingsView: View {
         SettingsView(showSignInView: .constant(false))
     }
 }
-
-struct LogOutButtonView: View {
-    @StateObject private var viewModel = SettingsViewModel()
-    @Binding var showSignInView: Bool
-    
-    var body: some View {
-        Button("Log out") {
-            Task {
-                do {
-                    try viewModel.signOut()
-                    showSignInView = true
-                } catch {
-                    print(error )
-                }
-            }
-        }
-    }
-}
-
-
 
 struct EmailFunctionsView: View {
     @StateObject private var viewModel = SettingsViewModel()

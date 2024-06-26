@@ -19,6 +19,12 @@ struct AuthDataResultModel {
     }
 }
 
+enum AuthProviderOption: String {
+    case email = "password"
+    case google = "google.com"
+}
+
+
 final class AuthenticationManager {
     
     static let shared = AuthenticationManager()
@@ -32,9 +38,34 @@ final class AuthenticationManager {
         return AuthDataResultModel(user: user)
     }
     
+    // esconder email settings ao logar com google
+    func getProvider() throws -> [AuthProviderOption] {
+        guard let providerData = Auth.auth().currentUser?.providerData else {
+            throw URLError(.badServerResponse)
+        }
+        var providers: [AuthProviderOption] = []
+        for provider in providerData {
+            if let option = AuthProviderOption(rawValue: provider.providerID) {
+                providers.append(option)
+            } else {
+                assertionFailure("Provider option not found \(provider.providerID)")
+            }
+        }
+        return providers
+    }
+    
+    //MARK: Deslogar a conta
+    func sigOut() throws {
+      try  Auth.auth().signOut() // como precisamos dar um ping no servidor entao essa funcao será assincrona 
+    }
+}
+
+//MARK: SIGN IN EMAIL FUNCTIONS
+extension AuthenticationManager {
+    
     //MARK: CRIAR USUARIO
     // func asincrona, bate no servidor e volta
-    @discardableResult // == sabemos que tem um retorno vindo mas nao nos importamos com ele 
+    @discardableResult // == sabemos que tem um retorno vindo mas nao nos importamos com ele
     func createUser(email: String, password: String) async  throws -> AuthDataResultModel {
         let authDataResult = try await Auth.auth().createUser(withEmail: email, password: password)
        return AuthDataResultModel(user: authDataResult.user)
@@ -69,9 +100,19 @@ final class AuthenticationManager {
         //MARK: will be Deprecated, PROCURAR POR OUTRA SOLUCAO PARA ATUALIZAR EMAIL
       try await user.updateEmail(to: email)
     }
+}
+
+// MARK: SIGN IN SSO
+extension AuthenticationManager {
     
-    //MARK: Deslogar a conta
-    func sigOut() throws {
-      try  Auth.auth().signOut() // como precisamos dar um ping no servidor entao essa funcao será assincrona 
+    @discardableResult
+    func signInWithGoogle(tokens: GoogleSignResultModel) async throws -> AuthDataResultModel {
+        let credential = GoogleAuthProvider.credential(withIDToken: tokens.idToken, accessToken: tokens.accessToken)
+       return try await signIn(credential: credential)
+    }
+    
+    func signIn(credential: AuthCredential) async throws -> AuthDataResultModel {
+        let authDataResult = try await Auth.auth().signIn(with: credential)
+       return AuthDataResultModel(user: authDataResult.user)
     }
 }
