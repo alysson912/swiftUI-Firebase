@@ -61,6 +61,14 @@ final class AuthenticationManager {
     func sigOut() throws {
         try  Auth.auth().signOut() // como precisamos dar um ping no servidor entao essa funcao será assincrona
     }
+    
+    //MARK: Deletar usuário
+    func delete() async throws {
+        guard let user = Auth.auth().currentUser else {
+            throw URLError(.badURL)
+        }
+        try await user.delete()
+    }
 }
 
 //MARK: SIGN IN EMAIL FUNCTIONS

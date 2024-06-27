@@ -23,9 +23,12 @@ final class SettingsViewModel: ObservableObject {
         self.authUser = try? AuthenticationManager.shared.getAuthenticatedUser()
     }
     
-    
     func signOut() throws {
         try  AuthenticationManager.shared.sigOut()
+    }
+    
+    func deleteAccount() async throws {
+        try await AuthenticationManager.shared.delete()
     }
     
     func resetPassword() async throws {
@@ -64,7 +67,6 @@ final class SettingsViewModel: ObservableObject {
 
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
-    
     @Binding var showSignInView: Bool
     
     var body: some View {
@@ -79,6 +81,20 @@ struct SettingsView: View {
                     }
                 }
             }
+            
+            Button(role: .destructive) {
+                Task {
+                    do {
+                        try await viewModel.deleteAccount()
+                        showSignInView = true
+                    } catch {
+                        print(error )
+                    }
+                }
+            } label: {
+                Text("Delete account")
+            }
+
             
             if viewModel.authProviders.contains(.email) {
                 EmailSectionView()
