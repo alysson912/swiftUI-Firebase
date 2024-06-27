@@ -10,12 +10,15 @@ import FirebaseAuth
 
 struct AuthDataResultModel {
     let uid: String
-    let email, photoUrl: String?
+    let email: String?
+    let photoUrl: String?
+    let isAnonymous: Bool
     
     init(user: User) {
         self.uid = user.uid
         self.email = user.email
         self.photoUrl = user.photoURL?.absoluteString
+        self.isAnonymous = user.isAnonymous
     }
 }
 
@@ -56,7 +59,7 @@ final class AuthenticationManager {
     
     //MARK: Deslogar a conta
     func sigOut() throws {
-      try  Auth.auth().signOut() // como precisamos dar um ping no servidor entao essa funcao será assincrona 
+        try  Auth.auth().signOut() // como precisamos dar um ping no servidor entao essa funcao será assincrona
     }
 }
 
@@ -68,14 +71,14 @@ extension AuthenticationManager {
     @discardableResult // == sabemos que tem um retorno vindo mas nao nos importamos com ele
     func createUser(email: String, password: String) async  throws -> AuthDataResultModel {
         let authDataResult = try await Auth.auth().createUser(withEmail: email, password: password)
-       return AuthDataResultModel(user: authDataResult.user)
+        return AuthDataResultModel(user: authDataResult.user)
     }
     
     //MARK: logar com email ja existente
     @discardableResult
     func signInUser(email: String, password: String) async  throws -> AuthDataResultModel {
         let authDataResult = try await Auth.auth().signIn(withEmail: email, password: password)
-       return AuthDataResultModel(user: authDataResult.user)
+        return AuthDataResultModel(user: authDataResult.user)
     }
     
     //MARK: RESETAR A SENHA
@@ -89,7 +92,7 @@ extension AuthenticationManager {
         guard let user = Auth.auth().currentUser else {
             throw URLError(.badServerResponse)
         }
-      try await user.updatePassword(to: password)
+        try await user.updatePassword(to: password)
     }
     
     //MARK: ATUALIZAR A SENHA
@@ -98,7 +101,7 @@ extension AuthenticationManager {
             throw URLError(.badServerResponse)
         }
         //MARK: will be Deprecated, PROCURAR POR OUTRA SOLUCAO PARA ATUALIZAR EMAIL
-      try await user.updateEmail(to: email)
+        try await user.updateEmail(to: email)
     }
 }
 
@@ -108,11 +111,48 @@ extension AuthenticationManager {
     @discardableResult
     func signInWithGoogle(tokens: GoogleSignResultModel) async throws -> AuthDataResultModel {
         let credential = GoogleAuthProvider.credential(withIDToken: tokens.idToken, accessToken: tokens.accessToken)
-       return try await signIn(credential: credential)
+        return try await signIn(credential: credential)
     }
     
     func signIn(credential: AuthCredential) async throws -> AuthDataResultModel {
         let authDataResult = try await Auth.auth().signIn(with: credential)
-       return AuthDataResultModel(user: authDataResult.user)
+        return AuthDataResultModel(user: authDataResult.user)
     }
+}
+
+//MARK: SIGN IN ANOUNYMOUS
+
+extension AuthenticationManager {
+    
+    @discardableResult
+    func signInAnonymous() async throws -> AuthDataResultModel {
+        let authDataResult = try await Auth.auth().signInAnonymously()
+        return AuthDataResultModel(user: authDataResult.user)
+    }
+    
+    //VINCULANDO EMAIL CASO O USUARIO ANONIMO QUEIRA FAZER ALGO NO APP
+    func linkEmail( email: String, password: String) async throws -> AuthDataResultModel {
+        let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+        return try await linkCredential(credential: credential)
+    }
+    
+    // VINCULANDO SIGIN IN WITH GOOGLE
+    
+    func linkGoogle(tokens: GoogleSignResultModel) async throws -> AuthDataResultModel {
+        let credential = GoogleAuthProvider.credential(withIDToken: tokens.idToken, accessToken: tokens.accessToken)
+        return try await linkCredential(credential: credential)
+    }
+    
+    private func linkCredential(credential: AuthCredential) async throws -> AuthDataResultModel {
+        guard let user = Auth.auth().currentUser else {
+            throw URLError( .badURL)
+        }
+        
+        let authDataResult = try await user.link(with: credential)
+        return AuthDataResultModel(user: authDataResult.user)
+    }
+    
+    
+    
+    
 }

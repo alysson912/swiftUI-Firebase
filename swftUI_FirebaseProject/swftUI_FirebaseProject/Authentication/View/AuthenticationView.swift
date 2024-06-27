@@ -11,11 +11,15 @@ import GoogleSignInSwift
 
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
- 
+    
     func sigInGoogle() async throws {
         let helper = SignInGoogleHelper()
         let tokens = try await helper.signIn()
         try await AuthenticationManager.shared.signInWithGoogle(tokens: tokens)
+    }
+    
+    func sigInAnonymous() async throws {
+        try await AuthenticationManager.shared.signInAnonymous()
     }
 }
 
@@ -37,24 +41,46 @@ struct AuthenticationView: View {
                     .background(Color.blue)
                     .clipShape(RoundedRectangle(cornerRadius: 8.0))
             }
-            GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .dark, style: .wide, state: .normal)) {
-                Task {
-                    do {
-                        try await viewModel.sigInGoogle()
-                        showSignInView = false
-                    } catch {
-                        print(error)
+            
+          
+                Button( action: {
+                    Task {
+                        do {
+                            try await viewModel.sigInAnonymous()
+                            showSignInView = false
+                        } catch {
+                            print(error)
+                        }
+                    }
+                }, label: {
+                    Text("Sign In Anonymously")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                        .frame(height: 55)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.gray)
+                        .clipShape(RoundedRectangle(cornerRadius: 8.0))
+                })
+                
+                GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .dark, style: .wide, state: .normal)) {
+                    Task {
+                        do {
+                            try await viewModel.sigInGoogle()
+                            showSignInView = false
+                        } catch {
+                            print(error)
+                        }
                     }
                 }
             }
+            .padding(.horizontal)
+            .shadow(radius: 10)
+            .navigationTitle("Sign In")
         }
-        .padding(.horizontal)
-        .navigationTitle("Sign In")
     }
-}
-
-#Preview {
-    NavigationStack {
-        AuthenticationView(showSignInView: .constant(false))
+    
+    #Preview {
+        NavigationStack {
+            AuthenticationView(showSignInView: .constant(false))
+        }
     }
-}
