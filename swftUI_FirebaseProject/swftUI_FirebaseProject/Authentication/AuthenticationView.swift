@@ -9,19 +9,7 @@ import SwiftUI
 import GoogleSignIn
 import GoogleSignInSwift
 
-@MainActor
-final class AuthenticationViewModel: ObservableObject {
-    
-    func sigInGoogle() async throws {
-        let helper = SignInGoogleHelper()
-        let tokens = try await helper.signIn()
-        try await AuthenticationManager.shared.signInWithGoogle(tokens: tokens)
-    }
-    
-    func sigInAnonymous() async throws {
-        try await AuthenticationManager.shared.signInAnonymous()
-    }
-}
+
 
 struct AuthenticationView: View {
     
