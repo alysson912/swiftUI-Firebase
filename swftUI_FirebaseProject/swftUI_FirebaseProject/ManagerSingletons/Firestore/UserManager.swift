@@ -9,6 +9,12 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
+struct Movie: Codable {
+    let id: String
+    let title: String?
+    let isPopular: Bool?
+}
+
 struct DBUser: Codable {
     let userId: String
     let isAnonymous: Bool?
@@ -16,6 +22,9 @@ struct DBUser: Codable {
     let photoUrl: String?
     let dateCreated: Date?
     let isPremium: Bool?
+    let preferences: [String]?
+    let favoriteMovie: Movie?
+    
     
     init(auth: AuthDataResultModel) {
         self.userId = auth.uid
@@ -24,6 +33,9 @@ struct DBUser: Codable {
         self.photoUrl = auth.photoUrl
         self.dateCreated = Date()
         self.isPremium = false
+        self.preferences = nil
+        self.favoriteMovie = nil
+        
     }
     
     //MARK: Retornando um novo osuario com dados iguais ao que ja está cadastrado no banco porem, com os dados adicionais
@@ -33,7 +45,9 @@ struct DBUser: Codable {
         email: String? = nil,
         photoUrl: String? = nil,
         dateCreated: Date? = nil,
-        isPremium: Bool? = nil
+        isPremium: Bool? = nil,
+        preferences: [String]? = nil,
+        favoriteMovie: Movie? = nil
     ) {
         self.userId = userId
         self.isAnonymous = isAnonymous
@@ -41,25 +55,10 @@ struct DBUser: Codable {
         self.photoUrl = photoUrl
         self.dateCreated = dateCreated
         self.isPremium = isPremium
+        self.preferences = preferences
+        self.favoriteMovie = favoriteMovie
     }
-    // pegamos o valor e criamos um retorno de uma nova estrutura com valores atualizados
-    //    func togglePremiumStatus() -> DBUser {
-    //        let currentValue = isPremium ?? false
-    //        return DBUser(
-    //            userId: userId,
-    //            isAnonymous: isAnonymous,
-    //            email: email,
-    //            photoUrl: photoUrl,
-    //            dateCreated: dateCreated,
-    //            isPremium: !currentValue)
-    //    }
-    
-    // mutating significa que iremos modificar a estrutura com self
-//    mutating func togglePremiumStatus() { //
-//        let currentValue = isPremium ?? false
-//        isPremium = !currentValue
-//    }
-    
+
     enum CodingKeys: String, CodingKey {
         case userId = "user_id"
         case isAnonymous = "is_anonymous"
@@ -67,6 +66,8 @@ struct DBUser: Codable {
         case photoUrl = "photo_url"
         case dateCreated = "date_created"
         case isPremium = "user_isPremium"
+        case preferences = "preferences"
+        case favoriteMovie = "favorite_movie"
     }
     
     init(from decoder: any Decoder) throws {
@@ -77,6 +78,8 @@ struct DBUser: Codable {
         self.photoUrl = try container.decodeIfPresent(String.self, forKey: .photoUrl)
         self.dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated)
         self.isPremium = try container.decodeIfPresent(Bool.self, forKey: .isPremium)
+        self.preferences = try container.decodeIfPresent([String].self, forKey: .preferences)
+        self.favoriteMovie = try container.decodeIfPresent(Movie.self, forKey: .favoriteMovie)
     }
     
     func encode(to encoder: any Encoder) throws {
@@ -87,6 +90,8 @@ struct DBUser: Codable {
         try container.encodeIfPresent(self.photoUrl, forKey: .photoUrl)
         try container.encodeIfPresent(self.dateCreated, forKey: .dateCreated)
         try container.encodeIfPresent(self.isPremium, forKey: .isPremium)
+        try container.encodeIfPresent(self.preferences, forKey: .preferences)
+        try container.encodeIfPresent(self.favoriteMovie, forKey: .favoriteMovie)
     }
     
  
@@ -102,20 +107,15 @@ final class UserManager {
         userCollection.document(userId)
     }
     
-//    // criando regra para retirar camelcase do objeto empurrado para o firebase para que ele consiga entender as proriedades
-//    private let encoder: Firestore.Encoder = {
-//        let encoder = Firestore.Encoder()
-//        encoder.keyEncodingStrategy = .convertToSnakeCase
-//        return encoder
-//    }()
-//    
-//    // criando regra para adicinar camelcase do objeto recebido do firebase para que ele consiga entender as proriedades
-//    private let decoder: Firestore.Decoder = {
-//        let decoder = Firestore.Decoder()
-//        decoder.keyDecodingStrategy = .convertFromSnakeCase
-//        return decoder
-//    }()
-//    
+    private let encoder: Firestore.Encoder = {
+        let encoder = Firestore.Encoder()
+        return encoder
+    }()
+    private let dencoder: Firestore.Decoder = {
+        let dencoder = Firestore.Decoder()
+        return dencoder
+    }()
+    
     
     //MARK: Recebendo dados do objeto, transformando em dicionario para emviar ao firebase (so recebe dados em formato de dicionario)
     func createNewUser(user: DBUser) async throws {
@@ -135,9 +135,32 @@ final class UserManager {
     
     // Func para alterar o status do unico dado que precisamos (evitando sobrescrecer todos os dados) 
     func updateUserPremiumStatus(userId: String, isPremium: Bool) async throws {
-        let data: [String: Any] = [
-            DBUser.CodingKeys.isPremium.rawValue : isPremium
-        ]
+        let data: [String: Any] = [DBUser.CodingKeys.isPremium.rawValue : isPremium]
         try await userDocument(userId: userId).updateData(data)
+    }
+    
+    func addUserPreferences(userId: String, preference: String) async throws {
+        let data: [String: Any] = [
+            DBUser.CodingKeys.preferences.rawValue : FieldValue.arrayUnion([preference])
+            ]
+        try await userDocument(userId: userId).updateData(data)
+    }
+    
+    func removeUserPreferences(userId: String, preference: String) async throws {
+        let data: [String: Any] = [DBUser.CodingKeys.preferences.rawValue : FieldValue.arrayRemove([preference])]
+        try await userDocument(userId: userId).updateData(data)
+    }
+    
+    func addFavoriteMovie(userId: String, movie: Movie) async throws {
+        guard let data = try? encoder.encode(movie) else {
+            throw URLError(.badURL)
+        }
+        let dict: [String: Any] = [DBUser.CodingKeys.favoriteMovie.rawValue : data]
+        try await userDocument(userId: userId).updateData(dict)
+    }
+    
+    func removeFavoriteMovie(userId: String) async throws {
+        let data: [String: Any?] = [DBUser.CodingKeys.favoriteMovie.rawValue : nil]
+        try await userDocument(userId: userId).updateData(data as [AnyHashable : Any])
     }
 }

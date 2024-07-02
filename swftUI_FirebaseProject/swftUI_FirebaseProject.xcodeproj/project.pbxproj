@@ -127,7 +127,6 @@
 				4BA4B0702C2EDC57004DB95B /* AuthenticationViewModel.swift */,
 				4B72EF462C2378EE008DC0EA /* AuthenticationView.swift */,
 				4BA4B0722C2EDC8A004DB95B /* SubViews */,
-				4B72EF4D2C237CC0008DC0EA /* View */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -145,13 +144,6 @@
 				4B72EF4A2C237C93008DC0EA /* AuthenticationManager.swift */,
 			);
 			path = SignIn;
-			sourceTree = "<group>";
-		};
-		4B72EF4D2C237CC0008DC0EA /* View */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 		4BA4B06C2C2EDB06004DB95B /* Core */ = {
@@ -446,6 +438,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -480,6 +473,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
