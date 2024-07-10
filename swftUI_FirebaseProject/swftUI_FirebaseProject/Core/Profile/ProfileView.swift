@@ -145,5 +145,9 @@ struct ProfileView: View {
 }
 
 #Preview {
-    RootView()
+    NavigationStack {
+        ProfileView( showSignInView: .constant( false))
+    }
+    
+    //RootView()
 }

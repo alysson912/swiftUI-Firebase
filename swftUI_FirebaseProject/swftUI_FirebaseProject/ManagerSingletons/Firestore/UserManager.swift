@@ -159,7 +159,7 @@ final class UserManager {
         try await userDocument(userId: userId).updateData(dict)
     }
     
-    func removeFavoriteMovie(userId: String) async throws {
+    func removeFavoriteMovie(userId: String) async throws { 
         let data: [String: Any?] = [DBUser.CodingKeys.favoriteMovie.rawValue : nil]
         try await userDocument(userId: userId).updateData(data as [AnyHashable : Any])
     }
