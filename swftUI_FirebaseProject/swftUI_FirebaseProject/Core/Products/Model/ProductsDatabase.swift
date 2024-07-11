@@ -37,6 +37,31 @@ struct Product: Codable, Identifiable {
     var meta: Meta?
     var images: [String]?
     var thumbnail: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case description
+        case category
+        case price
+        case discountPercentage
+        case rating
+        case stock
+        case tags
+        case brand
+        case sku
+        case weight
+        case dimensions
+        case warrantyInformation
+        case shippingInformation
+        case availabilityStatus
+        case reviews
+        case returnPolicy
+        case minimumOrderQuantity
+        case meta
+        case images
+        case thumbnail
+    }
 }
 
 enum AvailabilityStatus: String, Codable {
