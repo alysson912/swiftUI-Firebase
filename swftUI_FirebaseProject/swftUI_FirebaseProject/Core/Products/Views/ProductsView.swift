@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 @MainActor
 final class ProductsViewModel: ObservableObject {
@@ -13,6 +14,7 @@ final class ProductsViewModel: ObservableObject {
     @Published private(set) var products: [Product] = []
     @Published var selectedFilter: FilterOption? = nil
     @Published var selectedCategory: CategoryOption? = nil
+    private var lastDocument: DocumentSnapshot? = nil
     
     enum FilterOption: String, CaseIterable {
         // CaseIterable para interagir com for
@@ -60,7 +62,13 @@ final class ProductsViewModel: ObservableObject {
             self.products = try await ProductsManager.shared.getAllProducts(priceDescending: selectedFilter?.priceDescending, forcategory: selectedCategory?.categoryKey)
         }
     }
-    
+    func getProductsByRating() {
+        Task {
+            let (newProducts, lastDocument) = try await ProductsManager.shared.getProductsByRating(count: 3, lastDocument: lastDocument)
+            self.products.append(contentsOf: newProducts)
+            self.lastDocument = lastDocument
+        }
+    }
 }
 
 struct ProductsView: View {
@@ -72,6 +80,9 @@ struct ProductsView: View {
             ForEach(viewModel.products) { product in
                 ProductCellView(product: product)
             }
+            Button("Fetch products") {
+                viewModel.getProductsByRating()
+            }
         }
         .navigationTitle("Products")
         .toolbar(content: {
@@ -80,7 +91,7 @@ struct ProductsView: View {
                     ForEach(ProductsViewModel.FilterOption.allCases, id: \.self){ options in
                         Button(options.rawValue) {
                             Task {
-                            try await viewModel.filterSelected(option: options)
+                                try await viewModel.filterSelected(option: options)
                             }
                         }
                     }
@@ -92,7 +103,7 @@ struct ProductsView: View {
                     ForEach(ProductsViewModel.CategoryOption.allCases, id: \.self){ options in
                         Button(options.rawValue) {
                             Task {
-                            try await viewModel.categorySelected(option: options)
+                                try await viewModel.categorySelected(option: options)
                             }
                         }
                     }
@@ -100,7 +111,7 @@ struct ProductsView: View {
             }
         })
         .onAppear {
-             viewModel.getProducts()
+            // viewModel.getProducts()
         }
     }
 }
