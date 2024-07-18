@@ -19,7 +19,7 @@ struct DataProducts: Codable {
 }
 
 // MARK: - Product
-struct Product: Codable, Identifiable {
+struct Product: Codable, Identifiable, Equatable {
     var id: Int
     var title, description: String?
     var category: Category?
@@ -61,6 +61,10 @@ struct Product: Codable, Identifiable {
         case meta
         case images
         case thumbnail
+    }
+    // comparando 2 produtos pelo ID
+    static func ==(lhs: Product, rhs: Product) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 

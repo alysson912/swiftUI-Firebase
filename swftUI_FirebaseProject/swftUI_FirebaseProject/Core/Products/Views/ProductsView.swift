@@ -33,6 +33,8 @@ final class ProductsViewModel: ObservableObject {
     
     func filterSelected(option: FilterOption) async throws {
         self.selectedFilter = option
+        self.products = []
+        self.lastDocument = nil
         self.getProducts()
     }
     
@@ -54,19 +56,32 @@ final class ProductsViewModel: ObservableObject {
     
     func categorySelected(option: CategoryOption) async throws {
         self.selectedCategory = option
+        self.products = []
+        self.lastDocument = nil
         self.getProducts()
     }
     
     func getProducts() {
         Task {
-            self.products = try await ProductsManager.shared.getAllProducts(priceDescending: selectedFilter?.priceDescending, forcategory: selectedCategory?.categoryKey)
+            let (newProducts, lastDocument) = try await ProductsManager.shared.getAllProducts(priceDescending: selectedFilter?.priceDescending, forcategory: selectedCategory?.categoryKey, count: 10, lastDocument: lastDocument)
+            
+            self.products.append(contentsOf: newProducts)
+            if let lastDocument {
+                self.lastDocument = lastDocument
+            }
         }
     }
-    func getProductsByRating() {
+    // func para contar todos os itens da coleção no firebase
+//    func getProductsCount() {
+//        Task {
+//            let count = try await ProductsManager.shared.getAllProductsCount()
+//            print("All Products Count: \(count)")
+//        }
+//    }
+    func addUserFavoriteProduct(productId: Int) {
         Task {
-            let (newProducts, lastDocument) = try await ProductsManager.shared.getProductsByRating(count: 3, lastDocument: lastDocument)
-            self.products.append(contentsOf: newProducts)
-            self.lastDocument = lastDocument
+            let authDataResult = try AuthenticationManager.shared.getAuthenticatedUser()
+            try? await UserManager.shared.addUserFavoriteProducts(userId:authDataResult.uid, productId: productId)
         }
     }
 }
@@ -79,10 +94,20 @@ struct ProductsView: View {
         List {
             ForEach(viewModel.products) { product in
                 ProductCellView(product: product)
+                    .contextMenu {
+                        Button("Add to favorite") {
+                            viewModel.addUserFavoriteProduct(productId: product.id)
+                        }
+                    }
+                
+                if product == viewModel.products.last {
+                    ProgressView()
+                        .onAppear() {
+                            viewModel.getProducts()
+                        }
+                }
             }
-            Button("Fetch products") {
-                viewModel.getProductsByRating()
-            }
+            
         }
         .navigationTitle("Products")
         .toolbar(content: {
@@ -111,7 +136,8 @@ struct ProductsView: View {
             }
         })
         .onAppear {
-            // viewModel.getProducts()
+          //  viewModel.getProductsCount()
+            viewModel.getProducts()
         }
     }
 }
