@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+import Combine
 
 final class ProductsManager {
     
@@ -73,6 +74,7 @@ final class ProductsManager {
             .limit(to: count)
             .start(after: [lastRating ?? 999999])
             .getDocument(as: Product.self)
+        
     }
     
     func getProductsByRating(count: Int, lastDocument: DocumentSnapshot?) async throws -> (products: [Product], lastDocument: DocumentSnapshot?) {
@@ -97,29 +99,3 @@ final class ProductsManager {
     }
 }
 
-extension Query {
-    //passando qualquer tipo para a func
-    // Func com tipo generico T onde o tipo esteja em conformidade com o protocolo Decodable
-
-    func getDocument<T>(as type: T.Type) async throws -> [T] where T : Decodable {
-        try await getDocumentsWithSnapshot(as: type).products
-    }
-    
-    func getDocumentsWithSnapshot<T>(as type: T.Type) async throws -> (products: [T], lastDocument: DocumentSnapshot?) where T : Decodable {
-        let snapshot = try await self.getDocuments()
-        let products = try snapshot.documents.map({ document in
-            try document.data(as: T.self)
-        })
-        return (products, snapshot.documents.last)
-    }
-    
-    func startOptionally(afterDocument lastDocument: DocumentSnapshot?) -> Query {
-        guard let lastDocument else { return self }
-            return self.start(afterDocument: lastDocument)
-    }
-    
-    func aggregateCount() async throws -> Int {
-        let snapshot = try await self.count.getAggregation(source: .server)
-        return Int(truncating: snapshot.count)
-    }
-}

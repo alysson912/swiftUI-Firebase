@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+import Combine
 
 struct Movie: Codable {
     let id: String
@@ -58,7 +59,7 @@ struct DBUser: Codable {
         self.preferences = preferences
         self.favoriteMovie = favoriteMovie
     }
-
+    
     enum CodingKeys: String, CodingKey {
         case userId = "user_id"
         case isAnonymous = "is_anonymous"
@@ -94,7 +95,7 @@ struct DBUser: Codable {
         try container.encodeIfPresent(self.favoriteMovie, forKey: .favoriteMovie)
     }
     
- 
+    
 }
 
 final class UserManager {
@@ -125,6 +126,7 @@ final class UserManager {
         return dencoder
     }()
     
+    private var userFavoriteProductsListener: ListenerRegistration? = nil
     
     //MARK: Recebendo dados do objeto, transformando em dicionario para emviar ao firebase (so recebe dados em formato de dicionario)
     func createNewUser(user: DBUser) async throws {
@@ -138,11 +140,11 @@ final class UserManager {
     
     //MARK: FUNC PARA INFORMAR SE O USUARIO É PREMIUM OU N
     // merge: true => mescla esses dados comj os dados ja existentes dentro do banco
-//    func updateUserPremiumStatus(user: DBUser) async throws {
-//        try userDocument(userId: user.userId).setData(from: user, merge: true)
-//    }
+    //    func updateUserPremiumStatus(user: DBUser) async throws {
+    //        try userDocument(userId: user.userId).setData(from: user, merge: true)
+    //    }
     
-    // Func para alterar o status do unico dado que precisamos (evitando sobrescrecer todos os dados) 
+    // Func para alterar o status do unico dado que precisamos (evitando sobrescrecer todos os dados)
     func updateUserPremiumStatus(userId: String, isPremium: Bool) async throws {
         let data: [String: Any] = [DBUser.CodingKeys.isPremium.rawValue : isPremium]
         try await userDocument(userId: userId).updateData(data)
@@ -151,7 +153,7 @@ final class UserManager {
     func addUserPreferences(userId: String, preference: String) async throws {
         let data: [String: Any] = [
             DBUser.CodingKeys.preferences.rawValue : FieldValue.arrayUnion([preference])
-            ]
+        ]
         try await userDocument(userId: userId).updateData(data)
     }
     
@@ -168,11 +170,11 @@ final class UserManager {
         try await userDocument(userId: userId).updateData(dict)
     }
     
-    func removeFavoriteMovie(userId: String) async throws { 
+    func removeFavoriteMovie(userId: String) async throws {
         let data: [String: Any?] = [DBUser.CodingKeys.favoriteMovie.rawValue : nil]
         try await userDocument(userId: userId).updateData(data as [AnyHashable : Any])
     }
-//MARK: CREATE NEW COLLECTION = FAVORITE
+    //MARK: CREATE NEW COLLECTION = FAVORITE
     func addUserFavoriteProducts(userId: String, productId: Int) async throws {
         
         let document = userFavoriteProductCollection(userId: userId).document()
@@ -196,30 +198,83 @@ final class UserManager {
     func getAllUserFavoriteProducts(userId: String) async throws -> [UserFavoriteProduct]{
         try await userFavoriteProductCollection(userId: userId).getDocument(as: UserFavoriteProduct.self)
     }
-}
-
-struct UserFavoriteProduct: Codable {
-    let id: String
-    let productId: Int
-    let dateCreated: Date
     
-    enum CodingKeys: String, CodingKey {
-        case id = "id"
-        case productId = "product_id"
-        case dateCreated = "date_created"
+    func removeListenerForAllUserFavoriteProducts() {
+        self.userFavoriteProductsListener?.remove()
     }
     
-    func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.id, forKey: .id)
-        try container.encode(self.productId, forKey: .productId)
-        try container.encode(self.dateCreated, forKey: .dateCreated)
+    func addListenerForAllUserFavoriteProducts(userId: String, completion: @escaping (_ products: [UserFavoriteProduct]) -> Void) {
+        let listener = userFavoriteProductCollection(userId: userId).addSnapshotListener { querySnapshot, error in
+            guard let  documents = querySnapshot?.documents else {
+                print("No documents")
+                return
+            }
+            let products: [UserFavoriteProduct] = documents.compactMap ({ try? $0.data(as: UserFavoriteProduct.self) })
+            completion(products)
+            
+            querySnapshot?.documentChanges.forEach { diff in
+                if (diff.type == .added) {
+                    print("New products: \(diff.document.data())")
+                }
+                if (diff.type == .modified){
+                    print ("Modified products: \(diff.document.data())")
+                }
+                
+                if (diff.type == .removed) {
+                    print("Removed products: \(diff.document.data())")
+                }
+            }
+        }
     }
     
-    init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try container.decode(String.self, forKey: .id)
-        self.productId = try container.decode(Int.self, forKey: .productId)
-        self.dateCreated = try container.decode(Date.self, forKey: .dateCreated)
+//    func addListenerForAllUserFavoriteProducts(userId: String) -> AnyPublisher<[UserFavoriteProduct], Error>{
+//       let publisher = PassthroughSubject<[UserFavoriteProduct], Error>()
+//        
+//        self.userFavoriteProductCollection(userId: userId).addSnapshotListener { querySnapshot, error in
+//            guard let  documents = querySnapshot?.documents else {
+//                print("No documents")
+//                return
+//            }
+//            let products: [UserFavoriteProduct] = documents.compactMap ({ try? $0.data(as: UserFavoriteProduct.self) })
+//            publisher.send(products)
+//            
+//        
+//            }
+//        return publisher.eraseToAnyPublisher()
+//        }
+    func addListenerForAllUserFavoriteProducts(userId: String) -> AnyPublisher<[UserFavoriteProduct], Error>{
+        let (publisher, listener) = userFavoriteProductCollection(userId: userId)
+            .addSnapshotListener(as: UserFavoriteProduct.self)
+        
+        self.userFavoriteProductsListener = listener
+        return publisher
+        }
     }
-}
+            
+        
+        
+        struct UserFavoriteProduct: Codable {
+            let id: String
+            let productId: Int
+            let dateCreated: Date
+            
+            enum CodingKeys: String, CodingKey {
+                case id = "id"
+                case productId = "product_id"
+                case dateCreated = "date_created"
+            }
+            
+            func encode(to encoder: any Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                try container.encode(self.id, forKey: .id)
+                try container.encode(self.productId, forKey: .productId)
+                try container.encode(self.dateCreated, forKey: .dateCreated)
+            }
+            
+            init(from decoder: any Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.id = try container.decode(String.self, forKey: .id)
+                self.productId = try container.decode(Int.self, forKey: .productId)
+                self.dateCreated = try container.decode(Date.self, forKey: .dateCreated)
+            }
+        }

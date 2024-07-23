@@ -12,6 +12,10 @@
 		4B466EBE2C2239A1000896F2 /* swftUI_FirebaseProjectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B466EBD2C2239A1000896F2 /* swftUI_FirebaseProjectApp.swift */; };
 		4B466EC22C2239A2000896F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B466EC12C2239A2000896F2 /* Assets.xcassets */; };
 		4B466EC52C2239A2000896F2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B466EC42C2239A2000896F2 /* Preview Assets.xcassets */; };
+		4B5B31032C50599800FE96C6 /* Query+EXT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5B31022C50599800FE96C6 /* Query+EXT.swift */; };
+		4B5B31072C505A6A00FE96C6 /* OnFirstAppearViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5B31062C505A6A00FE96C6 /* OnFirstAppearViewModifier.swift */; };
+		4B5B31092C505B3800FE96C6 /* FavoriteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5B31082C505B3800FE96C6 /* FavoriteViewModel.swift */; };
+		4B5B310C2C505BD800FE96C6 /* ProductsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5B310B2C505BD800FE96C6 /* ProductsViewModel.swift */; };
 		4B7021692C2B4A5F00C2EC9F /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 4B7021682C2B4A5F00C2EC9F /* GoogleSignIn */; };
 		4B70216B2C2B4A5F00C2EC9F /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4B70216A2C2B4A5F00C2EC9F /* GoogleSignInSwift */; };
 		4B70216F2C2B507A00C2EC9F /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B70216E2C2B507A00C2EC9F /* Utilities.swift */; };
@@ -46,6 +50,10 @@
 		4B466EBD2C2239A1000896F2 /* swftUI_FirebaseProjectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swftUI_FirebaseProjectApp.swift; sourceTree = "<group>"; };
 		4B466EC12C2239A2000896F2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4B466EC42C2239A2000896F2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		4B5B31022C50599800FE96C6 /* Query+EXT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Query+EXT.swift"; sourceTree = "<group>"; };
+		4B5B31062C505A6A00FE96C6 /* OnFirstAppearViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnFirstAppearViewModifier.swift; sourceTree = "<group>"; };
+		4B5B31082C505B3800FE96C6 /* FavoriteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteViewModel.swift; sourceTree = "<group>"; };
+		4B5B310B2C505BD800FE96C6 /* ProductsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsViewModel.swift; sourceTree = "<group>"; };
 		4B70216C2C2B4CBB00C2EC9F /* swftUI-FirebaseProject-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "swftUI-FirebaseProject-Info.plist"; sourceTree = SOURCE_ROOT; };
 		4B70216E2C2B507A00C2EC9F /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		4B7021702C2B640F00C2EC9F /* SignInGoogleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInGoogleHelper.swift; sourceTree = "<group>"; };
@@ -107,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				4B1D570F2C4860F90054BE00 /* FavoriteView.swift */,
+				4B5B31082C505B3800FE96C6 /* FavoriteViewModel.swift */,
 			);
 			path = Favorites;
 			sourceTree = "<group>";
@@ -133,6 +142,8 @@
 			children = (
 				4B70216C2C2B4CBB00C2EC9F /* swftUI-FirebaseProject-Info.plist */,
 				4B466EBD2C2239A1000896F2 /* swftUI_FirebaseProjectApp.swift */,
+				4B5B31042C505A1700FE96C6 /* Components */,
+				4B5B31012C50597B00FE96C6 /* Extensions */,
 				4BA4B0792C2EE4FF004DB95B /* ManagerSingletons */,
 				4B70216D2C2B505700C2EC9F /* Utilities */,
 				4BA4B06C2C2EDB06004DB95B /* Core */,
@@ -150,6 +161,38 @@
 				4B466EC42C2239A2000896F2 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		4B5B31012C50597B00FE96C6 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				4B5B31022C50599800FE96C6 /* Query+EXT.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		4B5B31042C505A1700FE96C6 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				4B5B31052C505A2F00FE96C6 /* ViewModifiers */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		4B5B31052C505A2F00FE96C6 /* ViewModifiers */ = {
+			isa = PBXGroup;
+			children = (
+				4B5B31062C505A6A00FE96C6 /* OnFirstAppearViewModifier.swift */,
+			);
+			path = ViewModifiers;
+			sourceTree = "<group>";
+		};
+		4B5B310A2C505BB100FE96C6 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				4B5B310B2C505BD800FE96C6 /* ProductsViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		4B70216D2C2B505700C2EC9F /* Utilities */ = {
@@ -273,6 +316,7 @@
 			isa = PBXGroup;
 			children = (
 				4B9889272C3899F800A3D4B8 /* Model */,
+				4B5B310A2C505BB100FE96C6 /* ViewModel */,
 				4B1D570A2C4828F10054BE00 /* Views */,
 			);
 			path = Products;
@@ -362,9 +406,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B5B31072C505A6A00FE96C6 /* OnFirstAppearViewModifier.swift in Sources */,
 				4B1D570D2C485D740054BE00 /* TabbarView.swift in Sources */,
 				4B72EF542C245A65008DC0EA /* SettingsView.swift in Sources */,
 				4B466EBE2C2239A1000896F2 /* swftUI_FirebaseProjectApp.swift in Sources */,
+				4B5B31092C505B3800FE96C6 /* FavoriteViewModel.swift in Sources */,
 				4B72EF472C2378EE008DC0EA /* AuthenticationView.swift in Sources */,
 				4BA4B0782C2EE4BE004DB95B /* UserManager.swift in Sources */,
 				4B72EF522C245445008DC0EA /* RootView.swift in Sources */,
@@ -378,8 +424,10 @@
 				4B72EF492C237A26008DC0EA /* SignInEmailView.swift in Sources */,
 				4B70216F2C2B507A00C2EC9F /* Utilities.swift in Sources */,
 				4B72EF502C237CDB008DC0EA /* SignInEmailViewModel.swift in Sources */,
+				4B5B310C2C505BD800FE96C6 /* ProductsViewModel.swift in Sources */,
 				4BEFCEB12C3740CC001BA51E /* ProductsDatabase.swift in Sources */,
 				4BEFCEAF2C3737FD001BA51E /* ProductsView.swift in Sources */,
+				4B5B31032C50599800FE96C6 /* Query+EXT.swift in Sources */,
 				4BEFCEB32C374DDE001BA51E /* ProductsManager.swift in Sources */,
 				4B1D57102C4860F90054BE00 /* FavoriteView.swift in Sources */,
 			);
