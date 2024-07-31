@@ -37,6 +37,7 @@ struct ProductCellView: View {
             .font(.callout)
             .foregroundStyle(.secondary)
         }
+        
     }
 }
 

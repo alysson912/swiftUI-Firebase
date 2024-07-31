@@ -10,8 +10,7 @@ import SwiftUI
 struct TabbarView: View {
     
     @Binding var showSignInView: Bool
-    
-    
+
     var body: some View {
         TabView {
             NavigationStack {

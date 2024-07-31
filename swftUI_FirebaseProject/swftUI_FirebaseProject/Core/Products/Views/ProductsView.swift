@@ -13,6 +13,7 @@ struct ProductsView: View {
     @StateObject private var viewModel = ProductsViewModel()
     
     var body: some View {
+        
         List {
             ForEach(viewModel.products) { product in
                 ProductCellView(product: product)
@@ -26,11 +27,12 @@ struct ProductsView: View {
                     ProgressView()
                         .onAppear() {
                             viewModel.getProducts()
-                        }
+                    }
                 }
             }
             
         }
+        
         .navigationTitle("Products")
         .toolbar(content: {
             ToolbarItem(placement: .topBarLeading) {
@@ -58,7 +60,7 @@ struct ProductsView: View {
             }
         })
         .onAppear {
-          //  viewModel.getProductsCount()
+            //  viewModel.getProductsCount()
             viewModel.getProducts()
         }
     }

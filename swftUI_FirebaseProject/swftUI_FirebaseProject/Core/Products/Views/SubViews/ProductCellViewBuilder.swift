@@ -18,7 +18,7 @@ struct ProductCellViewBuilder: View {
                 ProductCellView(product: product)
             }
         }
-        .background(Color.cyan)
+       // .background(Color.cyan)
         .task {
             self.product = try?  await ProductsManager.shared.getProduct(productId: productId)
         }
