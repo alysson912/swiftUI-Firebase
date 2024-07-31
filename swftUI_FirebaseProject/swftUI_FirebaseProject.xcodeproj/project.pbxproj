@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B10CC1C2C5AF06B003BF83C /* SecurityRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B10CC1B2C5AF06B003BF83C /* SecurityRules.swift */; };
 		4B1D570D2C485D740054BE00 /* TabbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D570C2C485D740054BE00 /* TabbarView.swift */; };
 		4B1D57102C4860F90054BE00 /* FavoriteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D570F2C4860F90054BE00 /* FavoriteView.swift */; };
 		4B466EBE2C2239A1000896F2 /* swftUI_FirebaseProjectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B466EBD2C2239A1000896F2 /* swftUI_FirebaseProjectApp.swift */; };
@@ -44,6 +45,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4B10CC1B2C5AF06B003BF83C /* SecurityRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityRules.swift; sourceTree = "<group>"; };
 		4B1D570C2C485D740054BE00 /* TabbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarView.swift; sourceTree = "<group>"; };
 		4B1D570F2C4860F90054BE00 /* FavoriteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteView.swift; sourceTree = "<group>"; };
 		4B466EBA2C2239A1000896F2 /* swftUI_FirebaseProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = swftUI_FirebaseProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -94,6 +96,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4B10CC1A2C5AF04C003BF83C /* SecurityRules */ = {
+			isa = PBXGroup;
+			children = (
+				4B10CC1B2C5AF06B003BF83C /* SecurityRules.swift */,
+			);
+			path = SecurityRules;
+			sourceTree = "<group>";
+		};
 		4B1D570A2C4828F10054BE00 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -142,6 +152,7 @@
 			children = (
 				4B70216C2C2B4CBB00C2EC9F /* swftUI-FirebaseProject-Info.plist */,
 				4B466EBD2C2239A1000896F2 /* swftUI_FirebaseProjectApp.swift */,
+				4B10CC1A2C5AF04C003BF83C /* SecurityRules */,
 				4B5B31042C505A1700FE96C6 /* Components */,
 				4B5B31012C50597B00FE96C6 /* Extensions */,
 				4BA4B0792C2EE4FF004DB95B /* ManagerSingletons */,
@@ -406,6 +417,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B10CC1C2C5AF06B003BF83C /* SecurityRules.swift in Sources */,
 				4B5B31072C505A6A00FE96C6 /* OnFirstAppearViewModifier.swift in Sources */,
 				4B1D570D2C485D740054BE00 /* TabbarView.swift in Sources */,
 				4B72EF542C245A65008DC0EA /* SettingsView.swift in Sources */,
