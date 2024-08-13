@@ -6,67 +6,14 @@
 //
 
 import SwiftUI
-
-@MainActor
-final class ProfileViewModel: ObservableObject {
-    @Published private(set) var user: DBUser? = nil
-    
-    func loadCurrentUser() async throws {
-        let authDataResult = try AuthenticationManager.shared.getAuthenticatedUser()
-        self.user = try await UserManager.shared.getUser(userId: authDataResult.uid)
-    }
-    
-    // func  para buscar novamente no back-end usuario com os dados atualizados na tela
-    // adicionando dos dados pela model
-    func togglePremiumStatus() {
-        guard let user else { return }
-        let currentValue = user.isPremium ?? false
-        Task {
-            try await UserManager.shared.updateUserPremiumStatus(userId: user.userId, isPremium: !currentValue)
-            self.user = try await UserManager.shared.getUser(userId: user.userId)
-        }
-    }
-    
-    func addUserPreferences(text: String) {
-        guard let user else { return }
-        
-        Task {
-            try await UserManager.shared.addUserPreferences(userId: user.userId, preference: text)
-            self.user = try await UserManager.shared.getUser(userId: user.userId)
-        }
-    }
-    func removeUserPreferences(text: String) {
-        guard let user else { return }
-        
-        Task {
-            try await UserManager.shared.removeUserPreferences(userId: user.userId, preference: text)
-            self.user = try await UserManager.shared.getUser(userId: user.userId)
-        }
-    }
-    
-    func addFavoriteMovie() {
-        guard let user else { return }
-        let movie = Movie(id: "1", title: "Divertidamente 2", isPopular: true)
-        Task {
-            try await UserManager.shared.addFavoriteMovie(userId: user.userId ,movie: movie)
-            self.user = try await UserManager.shared.getUser(userId: user.userId)
-        }
-    }
-    
-    func removeFavoriteMovie() {
-        guard let user else { return }
-        
-        Task {
-            try await UserManager.shared.removeFavoriteMovie(userId: user.userId)
-            self.user = try await UserManager.shared.getUser(userId: user.userId)
-        }
-    }
-}
+import PhotosUI
 
 struct ProfileView: View {
     
     @StateObject var viewModel = ProfileViewModel()
     @Binding var showSignInView: Bool
+    @State private var selectedItem: PhotosPickerItem? = nil
+    @State private var url: URL? = nil
     
     let preferenceOptions: [String] = ["Sports", "Movies", "Books"]
     
@@ -76,6 +23,28 @@ struct ProfileView: View {
     
     
     var body: some View {
+        
+        if let urlString = viewModel.user?.profileImagePathUrl, let url = URL(string: urlString) {
+            AsyncImage(url: url) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 150, height: 150)
+                    .clipShape(RoundedRectangle(cornerRadius: 8.0))
+                    .shadow(radius: 1.4)
+            } placeholder: {
+                ProgressView()
+                    .frame(width: 150, height: 150)
+            }
+        }
+        
+        if viewModel.user?.profileImagePath != nil {
+            Button("Delete Image") {
+                viewModel.deleteProfileImage()
+            }
+        }
+        
+
         List {
             if let user = viewModel.user {
                 Text("UserID: \(user.userId)")
@@ -125,11 +94,22 @@ struct ProfileView: View {
                     Text("Favorite Movie:  \((user.favoriteMovie?.title ?? ""))")
                 }
                 
+                PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()){
+                    Text("Select a photo")
+                }
+                
+             
             }
         }
         .task {
             try? await viewModel.loadCurrentUser()
         }
+        
+        .onChange(of: selectedItem, initial: false, { oldValue, newValue in
+            if let newValue {
+                viewModel.saveProfileImage(item: newValue)
+            }
+        })
         .navigationTitle("Profile")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
