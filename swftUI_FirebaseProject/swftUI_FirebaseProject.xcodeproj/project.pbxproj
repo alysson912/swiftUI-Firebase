@@ -45,6 +45,8 @@
 		4BEFCEAF2C3737FD001BA51E /* ProductsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BEFCEAE2C3737FD001BA51E /* ProductsView.swift */; };
 		4BEFCEB12C3740CC001BA51E /* ProductsDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BEFCEB02C3740CC001BA51E /* ProductsDatabase.swift */; };
 		4BEFCEB32C374DDE001BA51E /* ProductsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BEFCEB22C374DDE001BA51E /* ProductsManager.swift */; };
+		4BF0436C2C6D5C6000C2BD1D /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 4BF0436B2C6D5C6000C2BD1D /* FirebaseCrashlytics */; };
+		4BF043702C6D5F6500C2BD1D /* CrashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF0436F2C6D5F6500C2BD1D /* CrashView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,6 +83,7 @@
 		4BEFCEB02C3740CC001BA51E /* ProductsDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductsDatabase.swift; sourceTree = "<group>"; };
 		4BEFCEB22C374DDE001BA51E /* ProductsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsManager.swift; sourceTree = "<group>"; };
 		4BEFCEB62C38166F001BA51E /* Data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Data.json; sourceTree = "<group>"; };
+		4BF0436F2C6D5F6500C2BD1D /* CrashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +97,7 @@
 				4BA4B06B2C2EDA7F004DB95B /* FirebaseFirestoreSwift in Frameworks */,
 				4B72EF452C23785A008DC0EA /* FirebaseAuth in Frameworks */,
 				4BD1AD712C6A8C7900682150 /* FirebaseStorage in Frameworks */,
+				4BF0436C2C6D5C6000C2BD1D /* FirebaseCrashlytics in Frameworks */,
 				4B72EF3B2C223E76008DC0EA /* FirebaseAnalytics in Frameworks */,
 				4BA4B0692C2EDA7F004DB95B /* FirebaseFirestore in Frameworks */,
 			);
@@ -315,6 +319,7 @@
 		4BA4B0762C2EE479004DB95B /* Firestore */ = {
 			isa = PBXGroup;
 			children = (
+				4BF0436E2C6D5F2100C2BD1D /* Crashlytics */,
 				4BD1AD722C6A994000682150 /* Storage */,
 				4BA4B0772C2EE4BE004DB95B /* UserManager.swift */,
 				4BEFCEB22C374DDE001BA51E /* ProductsManager.swift */,
@@ -349,6 +354,14 @@
 			path = Products;
 			sourceTree = "<group>";
 		};
+		4BF0436E2C6D5F2100C2BD1D /* Crashlytics */ = {
+			isa = PBXGroup;
+			children = (
+				4BF0436F2C6D5F6500C2BD1D /* CrashView.swift */,
+			);
+			path = Crashlytics;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -359,6 +372,7 @@
 				4B466EB62C2239A1000896F2 /* Sources */,
 				4B466EB72C2239A1000896F2 /* Frameworks */,
 				4B466EB82C2239A1000896F2 /* Resources */,
+				4BF0436D2C6D5D6E00C2BD1D /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -374,6 +388,7 @@
 				4BA4B0682C2EDA7F004DB95B /* FirebaseFirestore */,
 				4BA4B06A2C2EDA7F004DB95B /* FirebaseFirestoreSwift */,
 				4BD1AD702C6A8C7900682150 /* FirebaseStorage */,
+				4BF0436B2C6D5C6000C2BD1D /* FirebaseCrashlytics */,
 			);
 			productName = swftUI_FirebaseProject;
 			productReference = 4B466EBA2C2239A1000896F2 /* swftUI_FirebaseProject.app */;
@@ -429,6 +444,31 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		4BF0436D2C6D5D6E00C2BD1D /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		4B466EB62C2239A1000896F2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -456,6 +496,7 @@
 				4B72EF502C237CDB008DC0EA /* SignInEmailViewModel.swift in Sources */,
 				4B5B310C2C505BD800FE96C6 /* ProductsViewModel.swift in Sources */,
 				4BEFCEB12C3740CC001BA51E /* ProductsDatabase.swift in Sources */,
+				4BF043702C6D5F6500C2BD1D /* CrashView.swift in Sources */,
 				4BEFCEAF2C3737FD001BA51E /* ProductsView.swift in Sources */,
 				4B5B31032C50599800FE96C6 /* Query+EXT.swift in Sources */,
 				4BEFCEB32C374DDE001BA51E /* ProductsManager.swift in Sources */,
@@ -501,7 +542,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -608,7 +649,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "XA1.swftUI-FirebaseProject";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -643,7 +684,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "XA1.swftUI-FirebaseProject";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -738,6 +779,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4B466ECD2C223C27000896F2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		4BF0436B2C6D5C6000C2BD1D /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B466ECD2C223C27000896F2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
