@@ -16,7 +16,9 @@ struct swftUI_FirebaseProjectApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
+           // RootView()
+            //CrashView()
+            PerformanceView()
         }
     }
 }
@@ -26,4 +28,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     FirebaseApp.configure()
     return true
   }
+    
+    // Monitorando desempenho no firebase 
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        
+    }
+    
+    func applicationWillResignActive(_ application: UIApplication) {
+        
+    }
 }
