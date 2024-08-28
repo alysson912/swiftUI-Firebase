@@ -18,7 +18,8 @@ struct swftUI_FirebaseProjectApp: App {
         WindowGroup {
            // RootView()
             //CrashView()
-            PerformanceView()
+            //PerformanceView()
+            AnalyticsView()
         }
     }
 }

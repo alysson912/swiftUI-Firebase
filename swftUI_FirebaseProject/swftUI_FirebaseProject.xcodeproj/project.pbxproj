@@ -10,6 +10,8 @@
 		4B10CC1C2C5AF06B003BF83C /* SecurityRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B10CC1B2C5AF06B003BF83C /* SecurityRules.swift */; };
 		4B1D570D2C485D740054BE00 /* TabbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D570C2C485D740054BE00 /* TabbarView.swift */; };
 		4B1D57102C4860F90054BE00 /* FavoriteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D570F2C4860F90054BE00 /* FavoriteView.swift */; };
+		4B3B77F82C7F9A2D00D0FF59 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B3B77F72C7F9A2D00D0FF59 /* AdSupport.framework */; };
+		4B3B77FA2C7F9A4800D0FF59 /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3B77F92C7F9A4800D0FF59 /* AnalyticsView.swift */; };
 		4B466EBE2C2239A1000896F2 /* swftUI_FirebaseProjectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B466EBD2C2239A1000896F2 /* swftUI_FirebaseProjectApp.swift */; };
 		4B466EC22C2239A2000896F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B466EC12C2239A2000896F2 /* Assets.xcassets */; };
 		4B466EC52C2239A2000896F2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B466EC42C2239A2000896F2 /* Preview Assets.xcassets */; };
@@ -56,6 +58,8 @@
 		4B10CC1B2C5AF06B003BF83C /* SecurityRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityRules.swift; sourceTree = "<group>"; };
 		4B1D570C2C485D740054BE00 /* TabbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarView.swift; sourceTree = "<group>"; };
 		4B1D570F2C4860F90054BE00 /* FavoriteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteView.swift; sourceTree = "<group>"; };
+		4B3B77F72C7F9A2D00D0FF59 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		4B3B77F92C7F9A4800D0FF59 /* AnalyticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsView.swift; sourceTree = "<group>"; };
 		4B466EBA2C2239A1000896F2 /* swftUI_FirebaseProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = swftUI_FirebaseProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B466EBD2C2239A1000896F2 /* swftUI_FirebaseProjectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swftUI_FirebaseProjectApp.swift; sourceTree = "<group>"; };
 		4B466EC12C2239A2000896F2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -103,6 +107,7 @@
 				4BA4B06B2C2EDA7F004DB95B /* FirebaseFirestoreSwift in Frameworks */,
 				4B72EF452C23785A008DC0EA /* FirebaseAuth in Frameworks */,
 				4BD1AD712C6A8C7900682150 /* FirebaseStorage in Frameworks */,
+				4B3B77F82C7F9A2D00D0FF59 /* AdSupport.framework in Frameworks */,
 				4BF0436C2C6D5C6000C2BD1D /* FirebaseCrashlytics in Frameworks */,
 				4B72EF3B2C223E76008DC0EA /* FirebaseAnalytics in Frameworks */,
 				4BA4B0692C2EDA7F004DB95B /* FirebaseFirestore in Frameworks */,
@@ -144,6 +149,14 @@
 				4B5B31082C505B3800FE96C6 /* FavoriteViewModel.swift */,
 			);
 			path = Favorites;
+			sourceTree = "<group>";
+		};
+		4B3B77F62C7F999B00D0FF59 /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				4B3B77F92C7F9A4800D0FF59 /* AnalyticsView.swift */,
+			);
+			path = Analytics;
 			sourceTree = "<group>";
 		};
 		4B466EB12C2239A1000896F2 = {
@@ -245,6 +258,7 @@
 		4B72EF432C23785A008DC0EA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4B3B77F72C7F9A2D00D0FF59 /* AdSupport.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -325,10 +339,10 @@
 		4BA4B0762C2EE479004DB95B /* Firestore */ = {
 			isa = PBXGroup;
 			children = (
+				4BA4B0772C2EE4BE004DB95B /* UserManager.swift */,
+				4B3B77F62C7F999B00D0FF59 /* Analytics */,
 				4BF0436E2C6D5F2100C2BD1D /* Crashlytics */,
 				4BD1AD722C6A994000682150 /* Storage */,
-				4BA4B0772C2EE4BE004DB95B /* UserManager.swift */,
-				4BEFCEB22C374DDE001BA51E /* ProductsManager.swift */,
 			);
 			path = Firestore;
 			sourceTree = "<group>";
@@ -345,6 +359,7 @@
 		4BD1AD722C6A994000682150 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
+				4BEFCEB22C374DDE001BA51E /* ProductsManager.swift */,
 				4BD1AD732C6A9A0C00682150 /* StorageManager.swift */,
 			);
 			path = Storage;
@@ -491,6 +506,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B3B77FA2C7F9A4800D0FF59 /* AnalyticsView.swift in Sources */,
 				4B10CC1C2C5AF06B003BF83C /* SecurityRules.swift in Sources */,
 				4B5B31072C505A6A00FE96C6 /* OnFirstAppearViewModifier.swift in Sources */,
 				4B1D570D2C485D740054BE00 /* TabbarView.swift in Sources */,
